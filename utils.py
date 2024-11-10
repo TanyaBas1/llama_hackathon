@@ -10,9 +10,10 @@ from dotenv import load_dotenv
 # env variables
 account_sid = load_dotenv("TWILIO_ACCOUNT_SID")
 auth_token = load_dotenv("TWILIO_AUTH_TOKEN")
+
 client = Client(account_sid, auth_token)
 twillio_number = load_dotenv("TWILIO_NUMBER")
-twillio_number = "+14155238886"
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)

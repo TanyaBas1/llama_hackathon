@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Form
 from utils import send_message
 from dotenv import load_dotenv
-from llm_app.pipeline import runner
+from .pipeline import runner
 from loguru import logger
 
 
