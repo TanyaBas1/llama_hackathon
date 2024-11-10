@@ -43,4 +43,17 @@ also try to add comments about what you do and what are the next steps that shou
 - pandas 
 - requests
 
+## Local dev
+start fastapi server:
+```bash
+uvicorn main:app --reload
+```
+Setup ngrok, this is a forward proxy since we want to send messages to a public url
+from here: https://ngrok.com/docs/getting-started/
+
+When the fastapi server is running on local, start ngrok:
+```bash
+ngrok http http://localhost:<port-number>
+```
+
 Thank you!
