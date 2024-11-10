@@ -16,7 +16,6 @@ def runner(query, previous_queries=None):
         if tools.get("needs_pension_guidance") == "yes":
             queries_summary = ""
             max_attempts = 3
-            breakpoint()
             for attempt in range(max_attempts):
                 # Perform Pinecone search with rephrased query
                 search_results, rephrased_query = search_pinecone(query, context=queries_summary)
@@ -55,7 +54,7 @@ def main():
     Main function to execute the runner logic with a user-provided prompt.
     """
     user_prompt = "How to get old age pension in Bulgaria for war veterans?"
-    user_prompt = "I am a 60 year old Bulgarian grandma, who earned 20,000 euros a few years ago. Calculate my private pension."
+    #user_prompt = "I am a 60 year old Bulgarian grandma, who earned 20,000 euros a few years ago. Calculate my private pension."
     try:
         response, additional_info = runner(user_prompt)
         print("Response:", response)

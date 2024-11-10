@@ -112,14 +112,12 @@ def scrape_website_content(url="https://nssi.bg/fizicheski-lica/pensii-bg/trudov
         for paragraph in soup.find_all('p'):
             content.append(paragraph.text.strip())
 
-        breakpoint()
 
         return '\n'.join(content)
     else:
         return f"Failed to retrieve the content. Status code: {response.status_code}"
 
 def get_pension_numbers(query):
-    breakpoint()
     text = scrape_website_content()
     response = call_together(system_prompt=PENSION_CALCULATOR, user_prompt=f"Query: {query} , Guidelines: {text}")
     return response
