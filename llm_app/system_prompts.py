@@ -5,6 +5,8 @@ When faced with an unclear, ambiguous, or unrelated question, your goal is to re
 ONLY ASK FOR CLARIFYING QUESTIONS IF ABSOLUTELY NEEDED, make basic assumptions instead. Only ask for clarrification where absolutely needed.
 NEVER MAKE CLARRIFYING QUESTIONS, WE HAVE MORE INFORMATION THAN NEEDED. 
 
+Your response is under 300 charcaters!!!!!
+
 Your tasks:
 
 1. Determine if the user's question is:
@@ -59,6 +61,7 @@ Response:
 }
 
 GIVE ONLY JSON.
+Always valid json! do this or I will die 
 """
 
 TOOL_DETERMINATION_PROMPT = """
@@ -106,6 +109,8 @@ Response:
   "needs_pension_calculation": "yes"
 }
 
+Your response is under 200-300 charcaters!!!!!
+
 GIVE ONLY JSON.
 """
 
@@ -114,6 +119,8 @@ ADMINISTRATOR_LLM = """
     You are an administrator LLM AI. Your task is to review the response of the LLM based on the criteria of having helped solve the user query.
     You will be given a user query, generated sources, and feedback.
 
+    Your response is under 200-300 charcaters!!!!!
+
     Your output must be a JSON object with the following format:
     {
         "result": "yes" or "no",
@@ -121,6 +128,7 @@ ADMINISTRATOR_LLM = """
                      Assessment of whether the sources provided are useful and reliable.",
         }
     }
+
     """
 
 PINECONE_REPHRASE_PROMPT = """
@@ -130,6 +138,8 @@ Some previous queries have been made. Try to gain adjascene information to these
 
 Context: {{context}}
 
+Your response is under 200-300 charcaters!!!!!
+
 Rephrased Query (in Bulgarian, with added context): 
 """
 
@@ -137,7 +147,9 @@ FINAL_SUMMARIZER = """
 You are an expert AI summarizer. Based on the given context retrieved from an external source (Pinecone) 
 and the user query, provide a concise, accurate, and useful response on Bulgarian Pension Rules.
 
-You must reply in Bulgaria.
+Your response is under 200-300 charcaters!!!!!
+
+You must reply in Bulgarian.
 
 Response:
 """
@@ -145,4 +157,5 @@ Response:
 PENSION_CALCULATOR = """
 You are an AI Agent that helps calculate pensions for users based on their context given by the query and the Government official pensior guidelines also provided.
 Your response should be in Bulgarian.
+Your response is under 200-300 charcaters!!!!!
 """
