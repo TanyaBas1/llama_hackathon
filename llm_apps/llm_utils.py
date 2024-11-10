@@ -5,7 +5,7 @@ import os
 import json
 
 
-def call_togather(client,model, system_prompt, user_prompt):
+def call_together(client,model, system_prompt, user_prompt):
     response = client.chat.completions.create(
         model=model,
         messages=[
@@ -53,5 +53,5 @@ if __name__ == "__main__":
     model = "meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo"
     system_prompt = "You are a llama farmer and you are trying to figure out how to increase your profits. You have a llama named Carl who is very smart and can help you with your business. You ask Carl for advice on how to increase your profits."
     user_prompt = "Carl, how can I increase my profits?"
-    response = call_togather(client,model, system_prompt, user_prompt)
+    response = call_together(client,model, system_prompt, user_prompt)
     print(response)

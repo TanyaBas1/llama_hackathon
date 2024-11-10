@@ -39,7 +39,3 @@ json
   "clarification": ""
 }
 """
-
-
-def get_amibiguity_detection_prompt():
-    return AMBIGUITY_DETECTION

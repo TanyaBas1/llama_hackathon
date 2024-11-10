@@ -1,11 +1,9 @@
-from llm_agents.system_prompts import get_amibiguity_detection_prompt
+from llm_agents.system_prompts import AMBIGUITY_DETECTION
 from llm_agents.llm_utils import call_togather, retry_json_request
 from together import Together
 from dotenv import load_dotenv
 import os
 import json
-
-AMBIGUITY_DETECTION = get_amibiguity_detection_prompt()
 
 @retry_json_request(max_retries=3)
 def get_ambiguity_detection_response(client, user_prompt):
