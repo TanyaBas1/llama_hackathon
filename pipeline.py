@@ -45,7 +45,7 @@ def runner(query, previous_queries=None):
             return "Неуспешно генериране на отговор", queries_summary
         elif tools.get('needs_pension_calculation') == 'yes':
             result = get_pension_numbers(query=query)
-            return result
+            return result, None
         else:
             return "Няма наличен отговор", None 
 
@@ -53,8 +53,8 @@ def main():
     """
     Main function to execute the runner logic with a user-provided prompt.
     """
-    user_prompt = "How to get old age pension in Bulgaria for war veterans?"
-    #user_prompt = "I am a 60 year old Bulgarian grandma, who earned 20,000 euros a few years ago. Calculate my private pension."
+    #user_prompt = "How to get old age pension in Bulgaria for war veterans?"
+    user_prompt = "I am a 60 year old Bulgarian grandma, who earned 20,000 euros a few years ago. Calculate my private pension."
     try:
         response, additional_info = runner(user_prompt)
         print("Response:", response)

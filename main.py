@@ -1,12 +1,14 @@
 from fastapi import FastAPI, Form
 from utils import send_message
 from dotenv import load_dotenv
-from .pipeline import runner
-from loguru import logger
+from pipeline import runner
 
 
+
+load_dotenv()
 app = FastAPI()
 whatsapp_number = load_dotenv("CLIENT_NUMBER")
+
 whatsapp_number = "+359894532737"
 
 
