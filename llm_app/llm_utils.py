@@ -3,8 +3,10 @@ from together import Together
 import json
 from dotenv import load_dotenv
 import os
-from llm_app.system_prompts import AMBIGUITY_DETECTION, PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM, FINAL_SUMMARIZER
+from llm_app.system_prompts import AMBIGUITY_DETECTION_GUARDRAIL, TOOL_DETERMINATION_PROMPT, PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM, FINAL_SUMMARIZER, PENSION_CALCULATOR
 from pinecone_app.query_pinecone_index import query_pinecone_index
+import requests
+from bs4 import BeautifulSoup
 
 # Load environment variables
 load_dotenv()
@@ -57,10 +59,15 @@ def retry_json_request(max_retries=3):
 
 #@retry_json_request(max_retries=3)
 def get_ambiguity_detection_response(user_prompt):
-    response = call_together(system_prompt=AMBIGUITY_DETECTION, user_prompt=user_prompt)
+    response = call_together(system_prompt=AMBIGUITY_DETECTION_GUARDRAIL, user_prompt=user_prompt)
     # Parse the JSON response from the LLM
     response_json = json.loads(response)
     return response_json
+
+def get_tool_use(query):
+    response_json = call_together(system_prompt=TOOL_DETERMINATION_PROMPT, user_prompt=f"Query: {query}")
+    response = json.loads(response_json)
+    return response
 
 def rephrase_query(query, context=""):
     return call_together(system_prompt=PINECONE_REPHRASE_PROMPT.format(context), user_prompt=query)
@@ -77,7 +84,6 @@ def check_response_appropriateness(query, responses):
 
     return result, feedback
 
-
 def search_pinecone(query, context=""):
     query_fixed = rephrase_query(query, context)
     search_results = query_pinecone_index(query_text=query)
@@ -85,4 +91,35 @@ def search_pinecone(query, context=""):
 
 def generate_response(query, sources):
     response = call_together(system_prompt=FINAL_SUMMARIZER, user_prompt=f"Query: {query} ; Sources: {sources}")
+    return response
+
+def scrape_website_content(url="https://nssi.bg/fizicheski-lica/pensii-bg/trudova-deinost-pridobivane-pravo/razmer-na-pensiite/"):
+
+    # Perform HTTP GET request
+
+    headers = {
+    #    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+    }
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.content, 'html.parser')
+
+        content = []
+        for heading in soup.find_all(['h1', 'h2', 'h3', 'h4', 'h5', 'h6']):
+            content.append(heading.text.strip())
+
+        for paragraph in soup.find_all('p'):
+            content.append(paragraph.text.strip())
+
+        breakpoint()
+
+        return '\n'.join(content)
+    else:
+        return f"Failed to retrieve the content. Status code: {response.status_code}"
+
+def get_pension_numbers(query):
+    breakpoint()
+    text = scrape_website_content()
+    response = call_together(system_prompt=PENSION_CALCULATOR, user_prompt=f"Query: {query} , Guidelines: {text}")
     return response
