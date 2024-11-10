@@ -27,5 +27,6 @@ async def reply(Body: str = Form()) -> str:
     response = runner(Body)
     
     # Send the response using Twilio
+    logger.info(f"Phone number: {whatsapp_number}")
     send_message(whatsapp_number, response)
     return response
