@@ -27,7 +27,7 @@ def call_together(system_prompt, user_prompt, model="meta-llama/Llama-3.2-11B-Vi
         stop=["<|eot_id|>","<|eom_id|>"],
         stream=True
     )
-    # Accumulate the response content instead of printing it
+    # Accumulate the response content 
     response_content = ''
     for token in response:
         if hasattr(token, 'choices') and token.choices and hasattr(token.choices[0], 'delta'):
