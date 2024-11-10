@@ -3,7 +3,8 @@ from together import Together
 import json
 from dotenv import load_dotenv
 import os
-from .system_prompts import AMBIGUITY_DETECTION, PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM, FINAL_SUMMARIZER
+from llm_app.system_prompts import AMBIGUITY_DETECTION, PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM, FINAL_SUMMARIZER
+from pinecone_app.query_pinecone_index import query_pinecone_index
 
 # Load environment variables
 load_dotenv()
@@ -79,8 +80,8 @@ def check_response_appropriateness(query, responses):
 
 def search_pinecone(query, context=""):
     query_fixed = rephrase_query(query, context)
-    # search results = pinecone_search(query_fixed)
-    return query_fixed, "1,2 за всяка година осигурителен стаж и съответната пропорционална част от този процент за месеците осигурителен стаж – за осигурителния стаж, представляващ разлика между общия осигурителен стаж, зачетен на лицето, и стажа без превръщане."
+    search_results = query_pinecone_index(query_text=query)
+    return query_fixed, search_results
 
 def generate_response(query, sources):
     response = call_together(system_prompt=FINAL_SUMMARIZER, user_prompt=f"Query: {query} ; Sources: {sources}")
