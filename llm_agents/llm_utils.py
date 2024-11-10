@@ -2,7 +2,7 @@
 from together import Together
 from dotenv import load_dotenv
 import os
-
+import json
 
 
 def call_togather(client,model, system_prompt, user_prompt):
@@ -27,6 +27,23 @@ def call_togather(client,model, system_prompt, user_prompt):
 
     # TODO 
     return response_content
+
+def retry_json_request(max_retries=3):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    response = func(*args, **kwargs)
+                    # Try to parse JSON response
+                    return json.loads(response)  # will raise ValueError if not valid JSON
+                except (json.JSONDecodeError, ValueError) as e:
+                    if attempt < max_retries - 1:
+                        print(f"Attempt {attempt + 1} failed: Invalid JSON. Retrying...")
+                    else:
+                        print(f"Attempt {attempt + 1} failed: Invalid JSON. Max retries reached.")
+                        raise e
+        return wrapper
+    return decorator
 
 
 if __name__ == "__main__":
