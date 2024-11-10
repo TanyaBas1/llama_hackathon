@@ -1,6 +1,7 @@
 """Utils for sending messages through Twilio API"""
 
 import logging
+from loguru import logger
 
 # Third-party imports
 from twilio.rest import Client
@@ -17,6 +18,7 @@ twillio_number = load_dotenv("TWILIO_NUMBER")
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+logger.info("Twilio Messaging API initialized")
 
 
 # Sending message logic through Twilio Messaging API
