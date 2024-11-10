@@ -3,8 +3,8 @@ from together import Together
 import json
 from dotenv import load_dotenv
 import os
-from .system_prompts import AMBIGUITY_DETECTION, PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM, FINAL_SUMMARIZER
-from ..pinecone.query_pinecone_index import query_pinecone_index
+from llm_app.system_prompts import AMBIGUITY_DETECTION, PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM, FINAL_SUMMARIZER
+from pinecone_app.query_pinecone_index import query_pinecone_index
 
 # Load environment variables
 load_dotenv()

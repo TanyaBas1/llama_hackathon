@@ -14,7 +14,7 @@ INDEX_NAME = "pension-doc-index"
 
 # Initialize Pinecone
 pc = Pinecone(api_key=PINECONE_API_KEY)
-index = pc.Index(INDEX_NAME)  # Connect to the existing index
+index = pc.Index(INDEX_NAME)
 
 # Load tokenizer and model for generating query embeddings
 tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")

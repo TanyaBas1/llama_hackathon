@@ -1,4 +1,4 @@
-from .llm_utils import get_ambiguity_detection_response, search_pinecone, check_response_appropriateness, generate_response
+from llm_app.llm_utils import get_ambiguity_detection_response, search_pinecone, check_response_appropriateness, generate_response
 
 
 def runner(query, previous_queries=None):
