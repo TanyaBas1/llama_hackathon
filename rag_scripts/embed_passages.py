@@ -12,7 +12,7 @@ def load_passages(file_path):
     return passages
 
 # change the path, this is global path on my machine
-passages = load_passages('/Users/tetianabas/llama_hackathon/llama_hackathon/rag/extracted_text.json')
+passages = load_passages('/Users/tetianabas/llama_hackathon/llama_hackathon/rag_scripts/extracted_text.json')
 
 load_dotenv()
 api_key = os.getenv("TOGETHER_API_KEY")

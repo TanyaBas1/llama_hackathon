@@ -57,7 +57,7 @@ def split_into_passages(file_path):
 
 
 if __name__ == "__main__":
-    file_path = '/Users/tetianabas/llama_hackathon/llama_hackathon/rag/extracted_text.txt'
+    file_path = '/Users/tetianabas/llama_hackathon/llama_hackathon/rag_scripts/extracted_text.txt'
     passages = split_into_passages(file_path)
 
     # Printing the first few passages to verify
@@ -65,7 +65,7 @@ if __name__ == "__main__":
         print('------------NEW PASSAGE------------')
         print(f"Passage {i + 1}:\n{passage}\n{'-'*50}")
 
-    output_file = '/Users/tetianabas/llama_hackathon/llama_hackathon/rag/passages.json'
+    output_file = '/Users/tetianabas/llama_hackathon/llama_hackathon/rag_scripts/passages.json'
     with open(output_file, 'w', encoding='utf-8') as json_file:
         json.dump(passages, json_file, ensure_ascii=False, indent=4)
 
