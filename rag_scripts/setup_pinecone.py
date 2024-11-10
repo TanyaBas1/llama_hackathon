@@ -35,7 +35,7 @@ def initialize_pinecone():
     return pc.Index(INDEX_NAME)
 
 # Upsert data into Pinecone
-def upsert_data(index, data_file="data/processed_data/embeddings.json"):
+def upsert_data(index, data_file="/Users/tetianabas/llama_hackathon/llama_hackathon/data/raw_data/processed_data/embeddings.json"):
     """
     Load embeddings from a file and upsert them into Pinecone in batches.
     """
