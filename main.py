@@ -1,8 +1,7 @@
-"""FASTAPI APP"""
-
 from fastapi import FastAPI, Form
 from utils import send_message
 from dotenv import load_dotenv
+from .llm_app.pipeline import runner
 
 
 app = FastAPI()
@@ -17,10 +16,13 @@ async def index():
 
 @app.post("/message")
 async def reply(Body: str = Form()) -> str:
-    # Call GenAI service to generate response
-    # dummy response
-    chat_response = "Yo grandma, how can I help you?"
-
-    # Call Twilio service to send message
-    send_message(whatsapp_number, chat_response)
-    return ""
+    """
+    Endpoint to handle incoming messages, process them using the runner function,
+    and send a response back via WhatsApp.
+    """
+    # Process the incoming message using runner
+    response = runner(Body)
+    
+    # Send the response using Twilio
+    send_message(whatsapp_number, response)
+    return response
