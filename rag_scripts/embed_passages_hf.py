@@ -1,6 +1,6 @@
 import os
 import json
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModel, AutoModelForCausalLM
 import torch
 from dotenv import load_dotenv
 
@@ -21,14 +21,17 @@ def save_passages_to_json(passages, output_file):
         json.dump(passages, json_file, ensure_ascii=False, indent=4)
 
 def generate_embeddings(passages, tokenizer, model):
-    """Generate embeddings for each passage."""
-    embeddings = {}
-    for i, passage in enumerate(passages):
-        # Tokenize and encode the passage
-        inputs = tokenizer(passage, return_tensors="pt", padding=True, truncation=True)
+    embeddings = []
+    for passage in passages:
+        # Tokenize with padding and truncation
+        inputs = tokenizer(passage, return_tensors="pt", padding=True, truncation=True, max_length=512)
         with torch.no_grad():
-            embedding = model(**inputs).last_hidden_state.mean(dim=1)  # Mean pooling
-        embeddings[f"passage_{i}"] = {"text": passage, "embedding": embedding[0].tolist()}
+            outputs = model(**inputs)
+            # Retrieve the hidden states (first element of the outputs tuple)
+            hidden_states = outputs[0]  # Access the first item for hidden states
+            # Perform mean pooling on the hidden states
+            embedding = hidden_states.mean(dim=1).squeeze().cpu().numpy()
+        embeddings.append(embedding)
     return embeddings
 
 def save_embeddings_to_file(embeddings, output_file):
@@ -39,13 +42,27 @@ def save_embeddings_to_file(embeddings, output_file):
 # Load environment variables (if needed for other purposes)
 load_dotenv()
 
-# Initialize Hugging Face model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
-model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+# # Initialize Hugging Face model and tokenizer
+# tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+# model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
+
+offload_folder = "Users/tetianabas/llama_hackathon/llama_hackathon/data/raw_data/processed_data"
+os.makedirs(offload_folder, exist_ok=True)
+model = AutoModelForCausalLM.from_pretrained(
+    "sambanovasystems/SambaLingo-Bulgarian-Base",
+    device_map="auto",
+    torch_dtype="auto",
+    offload_folder=offload_folder
+)
+
+# Load the tokenizer
+tokenizer = AutoTokenizer.from_pretrained("sambanovasystems/SambaLingo-Bulgarian-Base")
+tokenizer.pad_token = tokenizer.eos_token or tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
 
 # Paths to input and output files
-raw_text_file = "data/processed_data/extracted_cleaned_text.txt"  # Updated to use the cleaned text
-output_dir = "data/processed_data"  # Directory for output files
+raw_text_file = "/Users/tetianabas/llama_hackathon/llama_hackathon/data/raw_data/processed_data/extracted_cleaned_text.txt"  # Updated to use the cleaned text
+output_dir = "/Users/tetianabas/llama_hackathon/llama_hackathon/data/raw_data/processed_data"  # Directory for output files
 
 # Ensure the output directory exists
 os.makedirs(output_dir, exist_ok=True)
