@@ -1,13 +1,4 @@
 from .llm_utils import get_ambiguity_detection_response, search_pinecone, check_response_appropriateness, generate_response
-import json
-
-# Initialize Pinecone
-#pinecone_api_key = os.getenv("PINECONE_API_KEY")
-#pinecone_environment = os.getenv("PINECONE_ENVIRONMENT")
-#pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
-
-#pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
-#index = pinecone.Index(pinecone_index_name)
 
 
 def runner(query, previous_queries=None):

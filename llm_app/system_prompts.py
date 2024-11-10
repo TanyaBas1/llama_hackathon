@@ -93,7 +93,9 @@ Rephrased Query (in Bulgarian, with added context):
 
 FINAL_SUMMARIZER = """
 You are an expert AI summarizer. Based on the given context retrieved from an external source (Pinecone) 
-and the user query, provide a concise, accurate, and useful response on Bulgarian Pensior Rules.
+and the user query, provide a concise, accurate, and useful response on Bulgarian Pension Rules.
+
+You must reply in Bulgaria.
 
 Response:
 """
