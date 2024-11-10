@@ -35,4 +35,12 @@ poetry run echo $TOGETHER_API_KEY
 Please create a branch with your name and work on a branch, do not push into main
 also try to add comments about what you do and what are the next steps that should be done - it will make the handover easier
 
+## Libraries that need to be installed 
+- openai 
+- pinecone-client 
+- PyPDF2 
+- pdfplumber 
+- pandas 
+- requests
+
 Thank you!
