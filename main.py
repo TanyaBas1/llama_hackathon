@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 
 
 app = FastAPI()
-whatsapp_number = load_dotenv("TWILIO_WHATSAPP_NUMBER")
-whatsapp_number = "+359894532737"
+whatsapp_number = load_dotenv("CLIENT_NUMBER")
 
 
 @app.get("/status")
