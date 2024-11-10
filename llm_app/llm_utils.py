@@ -3,7 +3,7 @@ from together import Together
 import json
 from dotenv import load_dotenv
 import os
-from .system_prompts import PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM
+from .system_prompts import AMBIGUITY_DETECTION, PINECONE_REPHRASE_PROMPT, ADMINISTRATOR_LLM, FINAL_SUMMARIZER
 
 # Load environment variables
 load_dotenv()
@@ -53,12 +53,35 @@ def retry_json_request(max_retries=3):
         return wrapper
     return decorator
 
-def rephrase_query(query):
-    return call_together(system_prompt=PINECONE_REPHRASE_PROMPT, user_prompt=query)
 
-def check_response_appropriateness(query):
-    return call_together(system_prompt=ADMINISTRATOR_LLM, user_prompt=query)
+#@retry_json_request(max_retries=3)
+def get_ambiguity_detection_response(user_prompt):
+    response = call_together(system_prompt=AMBIGUITY_DETECTION, user_prompt=user_prompt)
+    # Parse the JSON response from the LLM
+    response_json = json.loads(response)
+    return response_json
 
-def search_pinecone(query):
-    query_fixed = rephrase_query(query)
-    return "Размерът на пенсията за осигурителен стаж и възраст се определя, като доходът, от който се изчислява пенсията, се умножи със сумата, образувана от: по 1 процент за пенсии, отпуснати с начална дата до 31.03.2009 г., по процент 1,1 на сто за пенсии, отпуснати с началната дата от 01.04.2009 г. до 31.12.2016 г., за отпуснатите от 01.01.2017 г. до 31.12.2017 г. с 1,126 на сто, за отпуснати от 01.01.2018 г. до 31.12.2018 г. с 1,169 на сто, за отпуснатите с начална дата от 01.01.2019 г. до 24.12.2021 г. включително с 1,2 на сто за всяка година осигурителен стаж и съответната пропорционална част от процента за оставащите месеци осигурителен стаж. За пенсиите отпуснати с начална дата след 24 декември 2021 г. доходът, от който се изчислява пенсията, се умножава с процент 1,35 за всяка година осигурителен стаж без превръщане и съответната пропорционална част от този процент за месеците осигурителен стаж без превръщане, и с 1,2 за всяка година осигурителен стаж и съответната пропорционална част от този процент за месеците осигурителен стаж – за осигурителния стаж, представляващ разлика между общия осигурителен стаж, зачетен на лицето, и стажа без превръщане."
+def rephrase_query(query, context=""):
+    return call_together(system_prompt=PINECONE_REPHRASE_PROMPT.format(context), user_prompt=query)
+
+def check_response_appropriateness(query, responses):
+    user_prompt = f"Query: {query} ; Responses: {responses}"
+
+    response = call_together(system_prompt=ADMINISTRATOR_LLM, user_prompt=user_prompt)
+    
+    response_json = json.loads(response)
+    
+    result = response_json.get("result")
+    feedback = response_json.get("feedback")
+
+    return result, feedback
+
+
+def search_pinecone(query, context=""):
+    query_fixed = rephrase_query(query, context)
+    # search results = pinecone_search(query_fixed)
+    return query_fixed, "1,2 за всяка година осигурителен стаж и съответната пропорционална част от този процент за месеците осигурителен стаж – за осигурителния стаж, представляващ разлика между общия осигурителен стаж, зачетен на лицето, и стажа без превръщане."
+
+def generate_response(query, sources):
+    response = call_together(system_prompt=FINAL_SUMMARIZER, user_prompt=f"Query: {query} ; Sources: {sources}")
+    return response

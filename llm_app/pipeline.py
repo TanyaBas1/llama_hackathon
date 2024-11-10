@@ -1,5 +1,4 @@
-from llm_app.system_prompts import AMBIGUITY_DETECTION
-from llm_app.llm_utils import client, call_togather, retry_json_request, search_pinecone, check_response_appropriateness, generate_response
+from .llm_utils import get_ambiguity_detection_response, search_pinecone, check_response_appropriateness, generate_response
 import json
 
 # Initialize Pinecone
@@ -10,53 +9,61 @@ import json
 #pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
 #index = pinecone.Index(pinecone_index_name)
 
-@retry_json_request(max_retries=3)
-def get_ambiguity_detection_response(client, user_prompt):
-    model = "meta-llama/Llama-3.2-11B-Vision-Instruct-Turbo"
-    response = call_togather(client, model, AMBIGUITY_DETECTION, user_prompt)
-    # Parse the JSON response from the LLM
-    response_json = json.loads(response)
-    return response_json
-
 
 def runner(query, previous_queries=None):
     if previous_queries is None:
         previous_queries = []
 
-    guardrail = get_ambiguity_detection_response(client, query)
+    guardrail = get_ambiguity_detection_response(query)
     if guardrail.get('relevant') == "no":
-        return "Нерелевантен въпрос"
+        return "Нерелевантен въпрос", None
     elif guardrail.get('ambiguous') == "yes":
-        return "Необходима е допълнителна информация"
+        return "Необходима е допълнителна информация", None
     elif guardrail.get('needs_pension_documents') == "yes":
         queries_summary = ""
         max_attempts = 3
         for attempt in range(max_attempts):
-            search_results = search_pinecone(query)
-            generated_response = generate_response(search_results, query)
+            # Perform Pinecone search with rephrased query
+            search_results, rephrased_query = search_pinecone(query, context=queries_summary)
+            generated_response = generate_response(query, search_results)
             
+            # Track original query, rephrased query, and the truncated response
             previous_queries.append({
-                "query": query,
+                "original_query": query,
+                "rephrased_query": rephrased_query,
                 "response": generated_response[:500]
             })
 
+            # Update queries summary to include original and rephrased queries
             queries_summary = "\n".join(
-                [f"Query {i + 1}: {item['query']}\nResponse: {item['response']}" for i, item in enumerate(previous_queries)]
+                [f"Query {i + 1}: {item['original_query']}\nRephrased: {item['rephrased_query']}\nResponse: {item['response']}" 
+                 for i, item in enumerate(previous_queries)]
             )
 
-            if check_response_appropriateness(generated_response).result == "yes":
+            response = f"Response: {generated_response}, Pinecone History: {queries_summary}"
+            
+            result, feedback = check_response_appropriateness(generated_response, responses=response)
+            if result == "yes":
                 return generated_response, queries_summary
             else:
-                continue
+                queries_summary = "\n".join(f"Feedback: {feedback}")
         
         return "Неуспешно генериране на отговор", queries_summary
     else:
         return "Няма наличен отговор", None
 
-if __name__ == "__main__":
-    user_prompt = "How to get pension in Bulgaria?"
+def main():
+    """
+    Main function to execute the runner logic with a user-provided prompt.
+    """
+    user_prompt = "How to get old age pension in Bulgaria for war veterans?"
     try:
-        response = runner(user_prompt)
-        print(response)
-    except (json.JSONDecodeError, ValueError) as e:
-        print(f"Error: Unable to parse JSON response after retries. {e}")
+        response, additional_info = runner(user_prompt)
+        print("Response:", response)
+        if additional_info:
+            print("Additional Info:", additional_info)
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    main()
