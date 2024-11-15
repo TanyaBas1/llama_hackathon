@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from pinecone import Pinecone
 from transformers import AutoTokenizer, AutoModel
 
+
 # Load environment variables
 load_dotenv()
 
@@ -20,6 +21,7 @@ index = pc.Index(INDEX_NAME)
 tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
 
+
 # Query the Pinecone index
 def query_pinecone_index(query_text):
     """
@@ -34,18 +36,21 @@ def query_pinecone_index(query_text):
     results = index.query(
         vector=query_embedding,
         top_k=10,  # Number of top results to return
-        include_metadata=True
+        include_metadata=True,
     )
 
     # Filter results based on a threshold
     threshold = 0.5
-    filtered_results = [match for match in results["matches"] if match["score"] >= threshold]
+    filtered_results = [
+        match for match in results["matches"] if match["score"] >= threshold
+    ]
 
     if not filtered_results:
         return "No relevant results found."
     else:
         for match in filtered_results:
             return f"ID: {match['id']}, Text: {match['metadata']['text']}, Score: {match['score']}"
+
 
 # Main script
 if __name__ == "__main__":
