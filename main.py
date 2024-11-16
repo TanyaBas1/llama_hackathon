@@ -1,15 +1,17 @@
 from fastapi import FastAPI, Form
 from utils import send_message
+
+import os
 from dotenv import load_dotenv
 from pipeline import runner
-
+from logging import getLogger
 
 
 load_dotenv()
 app = FastAPI()
-whatsapp_number = load_dotenv("CLIENT_NUMBER")
-
-whatsapp_number = "+359894532737"
+whatsapp_number = os.getenv("CLIENT_NUMBER")
+logger = getLogger(__name__)
+logger.info(f"Phone number: {whatsapp_number}")
 
 
 @app.get("/status")
@@ -25,7 +27,7 @@ async def reply(Body: str = Form()) -> str:
     """
     # Process the incoming message using runner
     response = runner(Body)
-    
+
     # Send the response using Twilio
     logger.info(f"Phone number: {whatsapp_number}")
     send_message(whatsapp_number, response)
