@@ -12,8 +12,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Poetry-specific files
-poetry.lock
 
 # Virtual environment directories
 venv/
@@ -21,3 +19,8 @@ venv/
 
 # Ignore other sensitive or unnecessary files
 requirements.txt  # If Poetry is used instead
+
+# poetry specific files
+poetry.lock
+
+.DS_Store
