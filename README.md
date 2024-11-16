@@ -1,59 +1,95 @@
-## Set up 
+# BabAI - AI-Powered WhatsApp Bot for Social Security Information
 
-To run this you will have to go into the poetry shell 
+![babAI-new-version](https://github.com/user-attachments/assets/58548f85-2911-4c74-9891-1aed26163713)
 
-```bash
-poetry shell
+
+🚀 **Project Overview**
+
+BabAI is a WhatsApp chatbot that provides users with accurate, up-to-date information on social security and pension regulations in Bulgaria. It leverages AI to retrieve information directly from official sources and ensure high-quality, reliable responses. Built with convenience, accuracy, and safety in mind, BabAI empowers users to access critical information anytime, anywhere.
+
+🎯 **Key Features**
+
+- Seamless WhatsApp Integration: Available on a platform familiar to most Bulgarians, with a 90% adoption rate.
+
+- Real-Time Accurate Information: Fetches and presents information from National Social Security Institute documents.
+
+- Guardrails for Safety: Ensures responses are ethical, accurate, and compliant with legal guidelines.
+
+
+🛠️**Tech Stack**
+
+- Backend: FastAPI (Webhooks), Uvicorn, Ngrok (Reverse Proxy), Twilio API (for WhatsApp integration)
+
+- Database: Pinecone Vector Database
+
+- AI Frameworks: LLama, Together AI, Hugging Face
+
+- DevOps: GitHub Actions for CI/CD, Heruko
+
+- Other Tools: Python (Poetry for dependency management)
+
+🏗**Project Architecture**
+
+1. User Input: Users send questions about pensions or social security via WhatsApp
+2. API Gateway: Twilio API captures and forwards user queries to Ngrok reverse proxy 
+3. Reverse Proxy: Ngrok forwards payload to BabAI's FastAPI backend
+4. Information Retrieval: Backend retrieves accurate, context-specific data from official documents.
+5. Response Generation: The AI model generates responses, filtered by guardrails for quality and safety.
+6. Output: The user receives a comprehensive, user-friendly answer directly on WhatsApp via webhook.
+
+🚀 **Quick Start**
+
+Prerequisites:
+- Python 3.9+ installed
+- Twilio Account for WhatsApp API integration
+- [Ngrok](https://ngrok.com/docs/getting-started/)
+- Together AI API
+
+**Installation**
+
+Clone repository
+
+```
+git clone https://github.com/username/babai.git
+cd babai
 ```
 
-```bash
+Install dependencies:
+
+
+```
 poetry install
 ```
 
-after that you have to load environmental variables 
-- create .env
-- copy the content of .env.example 
-- instert the api key (feel free to message me to ask it)
+Set up environment variables:
 
+```
+cp .env.example .env
 
-to run a module 
+```
+Populate .env with your credentials (see the Environment Variables section below).
 
-```bash
-python path/to/your/module
+Run the server locally:
+```
+uvicorn app.main:app --reload
 ```
 
-## Useful debugging commands 
-
-to check if the api keys are loaded 
-
-```bash
-poetry run echo $TOGETHER_API_KEY
+Start ngrok reverse proxy:
 ```
-
-## Important notes
-
-Please create a branch with your name and work on a branch, do not push into main
-also try to add comments about what you do and what are the next steps that should be done - it will make the handover easier
-
-## Libraries that need to be installed 
-- openai 
-- pinecone-client 
-- PyPDF2 
-- pdfplumber 
-- pandas 
-- requests
-
-## Local dev
-start fastapi server:
-```bash
-uvicorn main:app --reload
-```
-Setup ngrok, this is a forward proxy since we want to send messages to a public url
-from here: https://ngrok.com/docs/getting-started/
-
-When the fastapi server is running on local, start ngrok:
-```bash
 ngrok http http://localhost:<port-number>
 ```
 
-Thank you!
+Start chatting with BabAI ✨✨
+
+
+
+🙌**Team** (alphabetic order)
+- Gabriela Tsvetkova
+- Miray Özcan
+- Saad Asad
+- Tetiana Bass
+- Hackathon Mentor from Meta
+
+🗣**Acknowledgements**
+
+Thanks to [Hack for Social Impact](https://www.hackforsocialimpact.com/) and all team members who helped make BabAI a reality! Thanks mom for giving us domain expertise on this complex topic 💗
