@@ -3,3 +3,21 @@ venv
 /data
 __pycache__/
 ./data/processed_data
+
+# macOS-specific files
+.DS_Store
+
+# Byte-compiled / optimized / compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Poetry-specific files
+poetry.lock.*
+
+# Virtual environment directories
+venv/
+.venv/
+
+# Ignore other sensitive or unnecessary files
+requirements.txt  # If Poetry is used instead
